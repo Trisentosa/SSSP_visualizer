@@ -1,20 +1,15 @@
 svg {
-  background-color: lightblue;
+  background-color: #81b29a;
   width: 600px;
-  height: 400px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 10%;
-  top: 0;
-  margin: auto;
+  height: 450px;
   border: 1px solid black;
-  z-index: 0;
 }
 
 body {
-  background-color: lightgrey;
   font-family: "Ubuntu", sans-serif;
+  background-color: #f4f1de;
+  width: 100vw;
+  height: 100vh;
 }
 
 .text-unselectable {
@@ -31,7 +26,30 @@ body {
 }
 
 .link-button {
-  margin-top: 10%;
-  font-size: 1.5em;
+  font-size: 1.2em;
   text-align: center;
+}
+
+.top-bar {
+  margin-top: 5%;
+}
+
+.scroll-display {
+  overflow: scroll;
+  max-height: 450px;
+  background-color: #f2cc8f;
+}
+
+.weight-input {
+  max-width: 70px;
+}
+
+.desc-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.edge-li {
+  border-radius: 0%;
+  background-color: #e6a53e;
 }
