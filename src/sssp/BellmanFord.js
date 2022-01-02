@@ -31,15 +31,13 @@ class BellmanFord {
     let P = [...Array(n).fill(s)];
     D[s] = 0;
     let edges = this.getsAllEdges(W);
-    console.log(edges);
 
     //bellman ford iterates its operation |V|-1 times
     for (let i = 0; i < n; i++) {
       for (let e of edges) {
         let dist = W[e[0]][e[1]];
-        console.log("dist", dist);
         // performs relaxation if there is path to u (not Infinity)
-        if (D[e[0]] != Infinity && D[e[0]] + dist < D[e[1]]) {
+        if (D[e[0]] !== Infinity && D[e[0]] + dist < D[e[1]]) {
           D[e[1]] = D[e[0]] + dist;
           P[e[1]] = e[0];
         }
@@ -49,13 +47,13 @@ class BellmanFord {
     //check for negative cycle
     for (let e of edges) {
       let dist = W[e[0]][e[1]];
-      if (D[e[0]] != Infinity && D[e[0]] + dist < D[e[1]]) {
+      if (D[e[0]] !== Infinity && D[e[0]] + dist < D[e[1]]) {
         console.log("contains negative cycle");
         return;
       }
     }
 
-    return D, P;
+    return [D, P];
   }
 }
 
