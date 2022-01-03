@@ -53,7 +53,7 @@ class BellmanFord {
       }
     }
 
-    return [D, P];
+    return { D, P };
   }
 }
 

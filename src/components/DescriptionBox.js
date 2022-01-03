@@ -12,12 +12,12 @@ const DescriptionBox = () => {
         related edges
       </span>
       <span className="mb-2">
-        3a. <strong>Right click</strong> on 2 different nodes to create a new
-        edge
+        3a. To create a new edge, start by <strong>Right clicking</strong> on 2
+        different nodes
       </span>
       <span className="mb-2">
         3b. Red hightlight will be the <Badge bg="danger">Source</Badge> and
-        green hightlight will be the <Badge bg="success">Destination</Badge>
+        blue hightlight will be the <Badge bg="primary">Destination</Badge>
       </span>
       <span className="mb-2">
         4. Fill in the <strong>Weight</strong> of the edge and connect them by

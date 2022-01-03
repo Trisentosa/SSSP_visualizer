@@ -1,4 +1,4 @@
-import { Popover, OverlayTrigger, Button } from "react-bootstrap";
+import { Popover, OverlayTrigger, Button, ButtonGroup } from "react-bootstrap";
 import { useState } from "react";
 const dijkstraText = (
   <>
@@ -23,9 +23,9 @@ const bellmanText = (
   </>
 );
 
-const AlgoOptions = () => {
-  const [algo, setAlgo] = useState("Dijkstra");
+const AlgoOptions = ({ algo, setAlgo }) => {
   const handleChange = (e) => {
+    console.log(e.target.value);
     setAlgo(e.target.value);
   };
   const popover = (
@@ -38,19 +38,21 @@ const AlgoOptions = () => {
   );
   return (
     <>
-      <select value={algo} onChange={handleChange}>
-        <option>Dijkstra</option>
-        <option>Bellman Ford</option>
-      </select>
-      <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-        <Button variant="info" className="me-3 shadow-none">
-          ?
-        </Button>
-      </OverlayTrigger>
-      {/* <select className="me-3">
-        <option>Directed</option>
-        <option>Undirected</option>
-      </select> */}
+      <ButtonGroup aria-label="Basic example">
+        <select value={algo} onChange={handleChange}>
+          <option value="Dijkstra">Dijkstra</option>
+          <option value="Bellman Ford">Bellman Ford</option>
+        </select>
+        <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+          <Button
+            variant="secondary"
+            className="me-3 shadow-none"
+            style={{ borderRadius: "0" }}
+          >
+            ?
+          </Button>
+        </OverlayTrigger>
+      </ButtonGroup>
     </>
   );
 };
