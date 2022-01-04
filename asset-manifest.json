@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/SSSP_visualizer/static/css/main.4c78e117.css",
+    "main.js": "/SSSP_visualizer/static/js/main.b558702f.js",
+    "index.html": "/SSSP_visualizer/index.html",
+    "main.4c78e117.css.map": "/SSSP_visualizer/static/css/main.4c78e117.css.map",
+    "main.b558702f.js.map": "/SSSP_visualizer/static/js/main.b558702f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4c78e117.css",
+    "static/js/main.b558702f.js"
+  ]
+}
