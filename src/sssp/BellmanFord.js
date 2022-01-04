@@ -24,6 +24,7 @@ class BellmanFord {
   // D: list of weight from vsource to vi (out)
   // P : list of 'path from' for vi (out)
   run(s) {
+    let solvable = true;
     //initialize values
     let W = this.W;
     let n = W.length;
@@ -48,12 +49,11 @@ class BellmanFord {
     for (let e of edges) {
       let dist = W[e[0]][e[1]];
       if (D[e[0]] !== Infinity && D[e[0]] + dist < D[e[1]]) {
-        console.log("contains negative cycle");
-        return;
+        solvable = false;
       }
     }
 
-    return { D, P };
+    return { D, P, solvable };
   }
 }
 

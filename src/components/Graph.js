@@ -11,15 +11,16 @@ import DisplayResult from "./DisplayResult";
 
 //svg dimensions and inital value
 let edge = {};
-let index = -1;
 let isTargetting = false;
 let isLinking = true;
+let edgeId = 0;
 
 const Graph = () => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [algo, setAlgo] = useState("Dijkstra");
-  const [result, setResult] = useState({ D: [], P: [] });
+  const [result, setResult] = useState({ D: [], P: [], solvable: true });
+  let [index, setIndex] = useState(-1);
 
   const [isWeightSelected, setIsWeightSelected] = useState(false);
   const [weight, setWeight] = useState(false);
@@ -40,33 +41,25 @@ const Graph = () => {
   const handleNodesEdges = (e) => {
     if (e.ctrlKey && e.target.tagName === "svg") {
       let box = e.target.getBoundingClientRect();
+      //reset values
+      edge = {};
+      isTargetting = false;
+      isLinking = true;
       //add a node
+      setIndex((index += 1));
       setNodes([
         ...nodes,
         {
           radius: 20,
           x: e.clientX - box.left,
           y: e.clientY - box.top,
-          index: (index += 1),
+          index: index,
         },
       ]);
-    } else if (e.ctrlKey && e.target.tagName === "circle") {
+    } else if (e.ctrlKey && e.target.className.baseVal === "node-circle") {
       let circleInfo = e.target.__data__;
       //delete node selected and edge related to it
       //update index references in edge and nodes (-1 if its bigger than circleInfo.index)
-      setNodes(
-        nodes.reduce(function (filtered, node) {
-          if (node.index !== circleInfo.index) {
-            let newNode = { ...node };
-
-            if (node.index > circleInfo.index) {
-              newNode.index = node.index - 1;
-            }
-            filtered.push(newNode);
-          }
-          return filtered;
-        }, [])
-      );
       setEdges(
         edges.reduce(function (filtered, edge) {
           let newEdge = { ...edge };
@@ -85,11 +78,29 @@ const Graph = () => {
           return filtered;
         }, [])
       );
-      index -= 1;
+
+      setNodes(
+        nodes.reduce(function (filtered, node) {
+          if (node.index !== circleInfo.index) {
+            let newNode = { ...node };
+
+            if (node.index > circleInfo.index) {
+              newNode.index = node.index - 1;
+            }
+            filtered.push(newNode);
+          }
+          return filtered;
+        }, [])
+      );
+      setIndex((index -= 1));
     }
   };
 
   useEffect(() => {
+    // d3 value data indexing is somewhat broken, so this as replacement for now
+    let pointIndexX = 0;
+    let pointIndexY = 0;
+    let pathIndex = 0;
     //edges
     let pathLine = svg
       .selectAll(".edge")
@@ -119,16 +130,26 @@ const Graph = () => {
       .attr("r", 5)
       .attr("fill", "red")
       .attr("stroke-width", 3)
-      .attr("cy", (value) => value.y2)
-      .attr("cx", (value) => value.x2);
+      .attr("cy", () => {
+        let r = edges[pointIndexY].y2;
+        pointIndexY += 1;
+        return r;
+      })
+      .attr("cx", () => {
+        let r = edges[pointIndexX].x2;
+        pointIndexX += 1;
+        return r;
+      });
 
     pathLine
       .selectAll("path")
-      .attr("d", (value) => {
-        return line()([
-          [value.x1, value.y1],
-          [value.x2, value.y2],
+      .attr("d", () => {
+        let r = line()([
+          [edges[pathIndex].x1, edges[pathIndex].y1],
+          [edges[pathIndex].x2, edges[pathIndex].y2],
         ]);
+        pathIndex += 1;
+        return r;
       })
       .attr("fill", "none")
       .attr("stroke", "black")
@@ -147,6 +168,7 @@ const Graph = () => {
           .attr("stroke", "black");
         e.append("circle")
           .attr("r", (value) => value.radius)
+          .attr("class", "node-circle")
           .attr("fill", "white")
           .attr("stroke-width", "3");
         e.append("text")
@@ -165,6 +187,7 @@ const Graph = () => {
 
     g.selectAll("circle")
       .attr("r", (value) => value.radius)
+      .attr("class", "node-circle")
       .attr("fill", "white")
       .attr("stroke-width", "3");
 
@@ -193,7 +216,15 @@ const Graph = () => {
       } else if (isLinking) {
         select(this).join("circle").attr("stroke", "red");
         isTargetting = true;
-        edge = { x1: d.x, y1: d.y, x2: d.x, y2: d.y, index1: d.index };
+        edgeId += 1;
+        edge = {
+          x1: d.x,
+          y1: d.y,
+          x2: d.x,
+          y2: d.y,
+          index1: d.index,
+          id: edgeId,
+        };
       }
     });
   }, [nodes, edges]);
@@ -243,7 +274,6 @@ const Graph = () => {
           <svg onClick={handleNodesEdges} className="canvas" ref={svgRef}></svg>
         </Col>
         <Col>
-          {console.log(result)}
           <DisplayResult result={result} />
         </Col>
       </Row>

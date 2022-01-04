@@ -20,11 +20,26 @@ class Dijkstra {
     return min_index;
   }
 
+  validate() {
+    let W = this.W;
+    let n = W.length;
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (W[i][j] < 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   // s: starting vertex index
   // D: list of weight from vsource to vi (out)
   // P : list of 'path from' for vi (out)
   run(s) {
     let W = this.W;
+    let solvable = this.validate(W);
+
     //initialize values
     let n = W.length;
     let spt = []; //spt: shortest path tree
@@ -50,7 +65,7 @@ class Dijkstra {
         }
       }
     }
-    return { D, P };
+    return { D, P, solvable };
   }
 }
 
