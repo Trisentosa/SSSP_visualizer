@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { select, line } from "d3";
+import { select, line, transition } from "d3";
 import DisplayInfo from "./DisplayInfo";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import { BsLink45Deg } from "react-icons/bs";
@@ -8,6 +8,7 @@ import AlgoOptions from "./AlgoOptions";
 import RunButton from "./RunButton";
 import DescriptionBox from "./DescriptionBox";
 import DisplayResult from "./DisplayResult";
+import StartingVertexSelect from "./StartingVertexSelect";
 
 //svg dimensions and inital value
 let edge = {};
@@ -19,6 +20,7 @@ const Graph = () => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [algo, setAlgo] = useState("Dijkstra");
+  const [startVertex, setStartVertex] = useState(0);
   const [result, setResult] = useState({ D: [], P: [], solvable: true });
   let [index, setIndex] = useState(-1);
 
@@ -28,6 +30,19 @@ const Graph = () => {
   // D3 stuff
   const svgRef = useRef();
   const svg = select(svgRef.current);
+
+  let handleAnimations = (lines, toAnimate) => {
+    console.log(lines);
+    let delayTime = 500;
+    let trans = transition().duration(500);
+    for (let i = 0; i < toAnimate.length; i++) {
+      console.log(i);
+      lines.transition(trans).delay(delayTime).attr("stroke", "green");
+      delayTime += 500;
+      lines.transition(trans).delay(delayTime).attr("stroke", "black");
+      delayTime += 500;
+    }
+  };
 
   let linkNodes = () => {
     if (!isLinking && isWeightSelected) {
@@ -141,7 +156,7 @@ const Graph = () => {
         return r;
       });
 
-    pathLine
+    let lines = pathLine
       .selectAll("path")
       .attr("d", () => {
         let r = line()([
@@ -154,6 +169,16 @@ const Graph = () => {
       .attr("fill", "none")
       .attr("stroke", "black")
       .attr("stroke-width", 3);
+
+    // handleAnimations(lines, [1, 2, 3, 4, 5]);
+    // let delayTime = 500;
+    // let toAnimate = [1, 2, 3];
+    // for (let i = 0; i < toAnimate.length; i++) {
+    //   lines.transition(500).delay(delayTime).attr("stroke", "green");
+    //   delayTime += 500;
+    //   lines.transition(500).delay(delayTime).attr("stroke", "black");
+    //   delayTime += 500;
+    // }
 
     //nodes
     let g = svg
@@ -246,7 +271,7 @@ const Graph = () => {
         </Button>
         <input
           type="number"
-          className="form-control weight-input"
+          className="form-control menu-input"
           placeholder="W"
           value={weight}
           onChange={(e) => {
@@ -258,12 +283,15 @@ const Graph = () => {
             }
           }}
         />
+
+        <StartingVertexSelect nodes={nodes} setStartVertex={setStartVertex} />
         <AlgoOptions algo={algo} setAlgo={setAlgo} />
         <RunButton
           nodes={nodes}
           edges={edges}
           algo={algo}
           setResult={setResult}
+          startVertex={startVertex}
         />
       </div>
       <Row>

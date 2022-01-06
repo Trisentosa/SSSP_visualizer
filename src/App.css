@@ -88,6 +88,7 @@ body {
   marker-end: url(#arrow);
 }
 
-.weight-input {
-  max-width: 70px;
+.menu-input {
+  width: 60px;
+  border-radius: 0%;
 }

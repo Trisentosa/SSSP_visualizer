@@ -20,12 +20,13 @@ const DescriptionBox = () => {
         blue hightlight will be the <Badge bg="primary">Destination</Badge>
       </span>
       <span className="mb-2">
-        4. Fill in the <strong>Weight</strong> of the edge and connect them by
-        clicking the <strong>Link Button</strong>
+        4. Fill in the <strong>Weight (W)</strong> of the edge and connect them
+        by clicking the <strong>Link Button</strong>
       </span>
       <span className="mb-2">
-        5. Once graph is done, choose an <strong>algorithm</strong> to run and
-        click the <strong>Run</strong> button
+        5. Once graph is done, choose a <strong>starting vertex (S)</strong> and
+        an <strong>algorithm</strong> to run. Then click the{" "}
+        <strong>Run</strong> button.
       </span>
     </div>
   );
