@@ -20,6 +20,22 @@ class Dijkstra {
     return min_index;
   }
 
+  getPath(P, i, s) {
+    if (i == s) {
+      return [s];
+    }
+
+    let current = P[i];
+    let sp = [i];
+    while (current != s) {
+      sp.push(current);
+      current = P[current];
+    }
+    sp.push(s);
+    sp = sp.reverse();
+    return sp;
+  }
+
   validate() {
     let W = this.W;
     let n = W.length;
@@ -39,12 +55,14 @@ class Dijkstra {
   run(s) {
     let W = this.W;
     let solvable = this.validate(W);
+    let steps = [];
 
     //initialize values
     let n = W.length;
     let spt = []; //spt: shortest path tree
     let D = W[s];
     let P = [...Array(n).fill(s)];
+    let paths = [];
 
     // iterates |V| times
     for (let i = 0; i < n; i++) {
@@ -65,7 +83,13 @@ class Dijkstra {
         }
       }
     }
-    return { D, P, solvable };
+
+    //add paths
+    for (let i = 0; i < n; i++) {
+      paths.push(this.getPath(P, i, s));
+    }
+
+    return { D, P, solvable, steps, paths };
   }
 }
 

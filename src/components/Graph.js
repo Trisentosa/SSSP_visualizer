@@ -21,7 +21,7 @@ const Graph = () => {
   const [edges, setEdges] = useState([]);
   const [algo, setAlgo] = useState("Dijkstra");
   const [startVertex, setStartVertex] = useState(0);
-  const [result, setResult] = useState({ D: [], P: [], solvable: true });
+  const [result, setResult] = useState({ D: [], paths: [], solvable: true });
   let [index, setIndex] = useState(-1);
 
   const [isWeightSelected, setIsWeightSelected] = useState(false);
@@ -30,19 +30,6 @@ const Graph = () => {
   // D3 stuff
   const svgRef = useRef();
   const svg = select(svgRef.current);
-
-  let handleAnimations = (lines, toAnimate) => {
-    console.log(lines);
-    let delayTime = 500;
-    let trans = transition().duration(500);
-    for (let i = 0; i < toAnimate.length; i++) {
-      console.log(i);
-      lines.transition(trans).delay(delayTime).attr("stroke", "green");
-      delayTime += 500;
-      lines.transition(trans).delay(delayTime).attr("stroke", "black");
-      delayTime += 500;
-    }
-  };
 
   let linkNodes = () => {
     if (!isLinking && isWeightSelected) {
@@ -121,7 +108,10 @@ const Graph = () => {
       .selectAll(".edge")
       .data(edges)
       .join((enter) => {
-        let e = enter.append("g").attr("class", "edge");
+        let e = enter
+          .append("g")
+          .attr("class", "edge")
+          .attr("id", (value) => `${value.index1}${value.index2}`);
         e.append("path")
           .attr("d", (value) => {
             return line()([
@@ -156,7 +146,7 @@ const Graph = () => {
         return r;
       });
 
-    let lines = pathLine
+    pathLine
       .selectAll("path")
       .attr("d", () => {
         let r = line()([
@@ -169,16 +159,6 @@ const Graph = () => {
       .attr("fill", "none")
       .attr("stroke", "black")
       .attr("stroke-width", 3);
-
-    // handleAnimations(lines, [1, 2, 3, 4, 5]);
-    // let delayTime = 500;
-    // let toAnimate = [1, 2, 3];
-    // for (let i = 0; i < toAnimate.length; i++) {
-    //   lines.transition(500).delay(delayTime).attr("stroke", "green");
-    //   delayTime += 500;
-    //   lines.transition(500).delay(delayTime).attr("stroke", "black");
-    //   delayTime += 500;
-    // }
 
     //nodes
     let g = svg
@@ -224,11 +204,24 @@ const Graph = () => {
       .attr("class", "text-unselectable")
       .style("font-size", "15px");
 
+    //highlight result
+    // let allLines = svg.selectAll(".edge")._groups[0];
+    // for (let path of result.paths) {
+    //   for (let line of allLines) {
+    //     console.log(`${line.id[0]}${line.id[1]}`);
+    //   }
+    // }
+
     // right click event
     svg.selectAll("g").on("contextmenu", function (e, d) {
       e.preventDefault();
 
-      if (isTargetting && isLinking && edge.index1 !== d.index) {
+      if (
+        isTargetting &&
+        isLinking &&
+        edge.index1 !== d.index &&
+        this.className.baseVal === "node"
+      ) {
         select(this).join("circle").attr("stroke", "blue");
         isTargetting = false;
         let angle = Math.atan2(d.y - edge.y1, d.x - edge.x1);
@@ -238,7 +231,7 @@ const Graph = () => {
         edge.y1 = edge.y1 + Math.sin(angle) * d.radius;
         edge.index2 = d.index;
         isLinking = false;
-      } else if (isLinking) {
+      } else if (isLinking && this.className.baseVal === "node") {
         select(this).join("circle").attr("stroke", "red");
         isTargetting = true;
         edgeId += 1;
@@ -256,7 +249,7 @@ const Graph = () => {
 
   return (
     <Container>
-      <div className="flex-center my-3 ">
+      <div className="flex-center my-3">
         <DescriptionBox />
       </div>
       <div className="flex-center"></div>

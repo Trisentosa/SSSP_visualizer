@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 
 const DisplayResult = ({ result }) => {
   const [distances, setDistances] = useState(result.D);
-  const [paths, setPaths] = useState(result.P);
+  const [paths, setPaths] = useState(result.paths);
   const [solvable, setSolvable] = useState(result.solvable);
 
   useEffect(() => {
     setDistances(result.D);
-    setPaths(result.P);
+    setPaths(result.paths);
     setSolvable(result.solvable);
   }, [result]);
 
@@ -21,8 +21,8 @@ const DisplayResult = ({ result }) => {
         {solvable
           ? distances.map((value, index) => (
               <ListGroup.Item key={index} className="edge-li">
-                node: {index} |Min.Distance: {distances[index]}| SP From:{" "}
-                {paths[index]}
+                node: {index} |Min.Distance: {distances[index]}| SP:{" "}
+                {paths[index].join("-")}
               </ListGroup.Item>
             ))
           : "The graph is not solvable! see the '?' button next to algo option to see why graph is not solvable"}

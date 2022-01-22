@@ -24,7 +24,6 @@ const bellmanText = (
 
 const AlgoOptions = ({ algo, setAlgo }) => {
   const handleChange = (e) => {
-    console.log(e.target.value);
     setAlgo(e.target.value);
   };
   const popover = (
